@@ -8,6 +8,6 @@ public class Post
     public DateTime CriadoEm { get; set; }
     
 
-    public ICollection<Reply> Respostas { get; set; }
+    public ICollection<Reply> Replies { get; set; }
     public ICollection<Like> Curtidas { get; set; }
 }

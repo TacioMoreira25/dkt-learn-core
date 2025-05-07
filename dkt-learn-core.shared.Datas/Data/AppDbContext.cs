@@ -48,7 +48,7 @@ public class AppDbContext : DbContext
 
         // Post e Reply (1:N)
         modelBuilder.Entity<Post>()
-            .HasMany(p => p.Reply)
+            .HasMany(p => p.Replies)
             .WithOne(r => r.Post)
             .HasForeignKey(r => r.PostId)
             .OnDelete(DeleteBehavior.Cascade); // Se deletar post, deleta respostas
@@ -59,7 +59,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Like>()
             .HasOne(l => l.Post)
-            .WithMany(p => p.Likes)
+            .WithMany(p => p.Curtidas)
             .HasForeignKey(l => l.PostId)
             .OnDelete(DeleteBehavior.Cascade); // Se deletar post, deleta likes
     }

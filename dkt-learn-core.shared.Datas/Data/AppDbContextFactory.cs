@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
 
 namespace DKT_Learn.Data
 {
@@ -8,13 +7,15 @@ namespace DKT_Learn.Data
     {
         public AppDbContext CreateDbContext(string[] args)
         {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
+            var host = Environment.GetEnvironmentVariable("DB_HOST");
+            var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+            var db   = Environment.GetEnvironmentVariable("DB_NAME");
+            var user = Environment.GetEnvironmentVariable("DB_USER");
+            var pass = Environment.GetEnvironmentVariable("DB_PASSWORD");
+            
+            var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={pass}";
 
             var builder = new DbContextOptionsBuilder<AppDbContext>();
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             builder.UseNpgsql(connectionString);
 
