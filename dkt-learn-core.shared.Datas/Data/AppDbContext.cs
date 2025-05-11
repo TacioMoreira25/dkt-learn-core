@@ -17,7 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<Reply> Replies { get; set; }
     public DbSet<Like> Likes { get; set; }  
     public DbSet<Post> Posts { get; set; }
-    
+    public DbSet<User> Users { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

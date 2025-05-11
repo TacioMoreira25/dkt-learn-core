@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace dkt_learn_core.shared.Datas.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250424031025_Initial")]
+    [Migration("20250509233539_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -79,6 +79,24 @@ namespace dkt_learn_core.shared.Datas.Migrations
                     b.ToTable("LearningPaths");
                 });
 
+            modelBuilder.Entity("dkt_learn_core.shared.Models.Models.Like", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("dkt_learn_core.shared.Models.Models.Module", b =>
                 {
                     b.Property<int>("Id")
@@ -103,6 +121,88 @@ namespace dkt_learn_core.shared.Datas.Migrations
                     b.HasIndex("LearningPathId");
 
                     b.ToTable("Modules");
+                });
+
+            modelBuilder.Entity("dkt_learn_core.shared.Models.Models.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Texto")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("dkt_learn_core.shared.Models.Models.Reply", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Texto")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Replies");
+                });
+
+            modelBuilder.Entity("dkt_learn_core.shared.Models.Models.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("RefreshTokenExpiry")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Roles")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("dkt_learn_core.shared.Models.Models.UserProgress", b =>
@@ -137,6 +237,17 @@ namespace dkt_learn_core.shared.Datas.Migrations
                     b.Navigation("Module");
                 });
 
+            modelBuilder.Entity("dkt_learn_core.shared.Models.Models.Like", b =>
+                {
+                    b.HasOne("dkt_learn_core.shared.Models.Models.Post", "Post")
+                        .WithMany("Curtidas")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("dkt_learn_core.shared.Models.Models.Module", b =>
                 {
                     b.HasOne("dkt_learn_core.shared.Models.Models.LearningPath", "LearningPath")
@@ -146,6 +257,17 @@ namespace dkt_learn_core.shared.Datas.Migrations
                         .IsRequired();
 
                     b.Navigation("LearningPath");
+                });
+
+            modelBuilder.Entity("dkt_learn_core.shared.Models.Models.Reply", b =>
+                {
+                    b.HasOne("dkt_learn_core.shared.Models.Models.Post", "Post")
+                        .WithMany("Replies")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("dkt_learn_core.shared.Models.Models.UserProgress", b =>
@@ -165,6 +287,13 @@ namespace dkt_learn_core.shared.Datas.Migrations
             modelBuilder.Entity("dkt_learn_core.shared.Models.Models.Module", b =>
                 {
                     b.Navigation("Contents");
+                });
+
+            modelBuilder.Entity("dkt_learn_core.shared.Models.Models.Post", b =>
+                {
+                    b.Navigation("Curtidas");
+
+                    b.Navigation("Replies");
                 });
 #pragma warning restore 612, 618
         }
