@@ -70,7 +70,6 @@ namespace dkt_learn_core.Controllers
 
             return Ok(new { message = "Logout realizado com sucesso!" });
         }
-
         
         [HttpGet("Auth-endpoint")]
         [Authorize]

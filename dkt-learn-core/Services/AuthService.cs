@@ -121,4 +121,41 @@ public class AuthService : IAuthService
         await context.SaveChangesAsync();
         return true;
     }
+    
+    public async Task<User?> UpdateAsync(UserDto request, Guid userId)
+    {
+        var user = await context.Users.FindAsync(userId);
+        if (user == null)
+            return null;
+     
+        user.Username = request.Username;
+        user.Email = request.Email;
+        user.FotoUrl = request.FotoUrl;
+        
+        var inviteCode = configuration.GetValue<string>("AppSettings:ProfessorInviteCode");
+        string role = "Aluno"; 
+        if (!string.IsNullOrEmpty(request.InviteCode))
+        {
+            if (request.InviteCode == inviteCode)
+                role = "Professor";
+            else
+                return null; 
+        }
+        user.Roles = role;
+        
+        context.Users.Update(user);
+        await context.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task<User?> DeleteUserAsync(UserDto request)
+    {
+        User? user = await context.Users.FirstOrDefaultAsync(u => u.Username == request.Username 
+                                                                  || u.Email == request.Username);
+        if (user == null)
+            return null;
+        context.Users.Remove(user);
+        await context.SaveChangesAsync();
+        return user;
+    }
 }
