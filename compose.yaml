@@ -1,7 +1,0 @@
-﻿services:
-  dkt-learn-core:
-    image: dkt-learn-core
-    build:
-      context: .
-      dockerfile: dkt-learn-core/Dockerfile
-

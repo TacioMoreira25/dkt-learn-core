@@ -1,8 +1,13 @@
+using System.Net.Mail;
 using System.Security.Claims;
 using dkt_learn_core.Services;
 using dkt_learn_core.shared.Models.Dtos;
+using dkt_learn_core.shared.Models.Models;
+using DKT_Learn.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace dkt_learn_core.Controllers
 {
@@ -11,9 +16,13 @@ namespace dkt_learn_core.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService service;
-        public AuthController(IAuthService service)
+        private readonly IEmailService emailService;
+        public readonly AppDbContext context;
+        public AuthController(IAuthService service, IEmailService emailService, AppDbContext context)
         {
             this.service = service;
+            this.emailService = emailService;
+            this.context = context;
         }
 
         [HttpPost("register")]
@@ -71,19 +80,56 @@ namespace dkt_learn_core.Controllers
             return Ok(new { message = "Logout realizado com sucesso!" });
         }
         
-        [HttpGet("Auth-endpoint")]
-        [Authorize]
-        public ActionResult<string> AuthCheck()
+        [HttpPost("request-reset-code")]
+        public async Task<IActionResult> RequestResetCode(RequestResetCodeDto dto)
         {
-            return Ok();
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            if (user is null)
+                return Ok("Usuário não encontrado."); 
+    
+            try
+            {
+                // Validação de e-mail
+                var emailAddr = new MailAddress(user.Email);
+            }
+            catch
+            {
+                return BadRequest("E-mail inválido no cadastro.");
+            }
+
+            var code = new Random().Next(100000, 999999).ToString();
+
+            user.PasswordResetCode = code;
+            user.ResetCodeExpiry = DateTime.UtcNow.AddMinutes(5);
+
+            await context.SaveChangesAsync();
+
+            await emailService.SendResetCodeAsync(user.Email, code);
+
+            return Ok("Código enviado.");
         }
+
         
-        [HttpGet("Admin-endpoint")]
-        [Authorize(Roles = "Admin")]
-        public ActionResult AdminCheck()
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
         {
-            return Ok();
+            var user = await context.Users.FirstOrDefaultAsync(u => u.PasswordResetCode == dto.Code);
+
+            if (user == null || user.ResetCodeExpiry < DateTime.UtcNow)
+                return BadRequest("Código inválido ou expirado.");
+
+            var hasher = new PasswordHasher<User>();
+            user.PasswordHash = hasher.HashPassword(user, dto.NewPassword);
+
+            user.PasswordResetCode = null;
+            user.ResetCodeExpiry = null;
+
+            await context.SaveChangesAsync();
+
+            return Ok("Senha redefinida com sucesso.");
         }
+
+
        
     }
 }

@@ -66,7 +66,7 @@ namespace dkt_learn_core.Controllers
         {
             var response = await service.DeleteUserAsync(request);
             if (response is null)
-                return BadRequest("invalid username or email");
+                return BadRequest("invalid username");
             
             return Ok("Usuario deletado com sucesso!");
         }

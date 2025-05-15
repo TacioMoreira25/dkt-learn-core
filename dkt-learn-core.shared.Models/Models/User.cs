@@ -11,4 +11,7 @@ public class User
     public string Roles { get; set; } = "Aluno";
     public string RefreshToken { get; set; } = string.Empty;
     public DateTime RefreshTokenExpiry { get; set; }
+    public string? PasswordResetCode { get; set; }
+    public DateTime? ResetCodeExpiry { get; set; }
+
 }
