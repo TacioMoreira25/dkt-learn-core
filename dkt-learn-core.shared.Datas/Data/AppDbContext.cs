@@ -46,22 +46,36 @@ public class AppDbContext : DbContext
             .HasForeignKey(up => up.ContentId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Post e Reply (1:N)
         modelBuilder.Entity<Post>()
             .HasMany(p => p.Replies)
             .WithOne(r => r.Post)
             .HasForeignKey(r => r.PostId)
-            .OnDelete(DeleteBehavior.Cascade); // Se deletar post, deleta respostas
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Like (composta: UserId + PostId)
         modelBuilder.Entity<Like>()
             .HasKey(l => new { l.UserId, l.PostId });
 
         modelBuilder.Entity<Like>()
             .HasOne(l => l.Post)
-            .WithMany(p => p.Curtidas)
+            .WithMany(p => p.Likes)
             .HasForeignKey(l => l.PostId)
-            .OnDelete(DeleteBehavior.Cascade); // Se deletar post, deleta likes
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Reply>()
+            .HasKey(r => r.Id); // chave primária
+
+        modelBuilder.Entity<Reply>()
+            .HasOne(r => r.Post)
+            .WithMany(p => p.Replies)
+            .HasForeignKey(r => r.PostId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Reply>()
+            .HasOne(r => r.User)
+            .WithMany() 
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Restrict); // evita deletar replies ao deletar user
+
     }
 
 }

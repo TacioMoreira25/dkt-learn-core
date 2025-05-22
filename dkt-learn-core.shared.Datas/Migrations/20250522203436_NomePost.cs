@@ -5,35 +5,25 @@
 namespace dkt_learn_core.shared.Datas.Migrations
 {
     /// <inheritdoc />
-    public partial class Updateuser : Migration
+    public partial class NomePost : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Email",
-                table: "Users",
+                name: "Username",
+                table: "Replies",
                 type: "text",
                 nullable: false,
                 defaultValue: "");
-
-            migrationBuilder.AddColumn<string>(
-                name: "FotoUrl",
-                table: "Users",
-                type: "text",
-                nullable: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Email",
-                table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "FotoUrl",
-                table: "Users");
+                name: "Username",
+                table: "Replies");
         }
     }
 }
