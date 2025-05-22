@@ -89,7 +89,6 @@ namespace dkt_learn_core.Controllers
     
             try
             {
-                // Validação de e-mail
                 var emailAddr = new MailAddress(user.Email);
             }
             catch
@@ -108,7 +107,6 @@ namespace dkt_learn_core.Controllers
 
             return Ok("Código enviado.");
         }
-
         
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
