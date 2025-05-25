@@ -3,6 +3,7 @@ namespace dkt_learn_core.shared.Models.Dtos;
 
 public class PostDto
 { 
+    public Guid Id { get; set; }
     public string Username { get; set; }
     public string Titulo { get; set; }
     public string Conteudo { get; set; }

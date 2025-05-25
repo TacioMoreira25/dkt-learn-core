@@ -95,8 +95,10 @@ public class AuthService : IAuthService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, user.Username),
+            new Claim("email", user.Email), 
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Role, user.Roles),
+            new Claim("fotoUrl", user.FotoUrl ?? string.Empty), 
         };
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(configuration.GetValue<string>("AppSettings:Token")!));

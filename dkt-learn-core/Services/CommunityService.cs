@@ -41,6 +41,7 @@ public class CommunityService : ICommunityService
 
         var response = posts.Select(p => new PostDto
         {
+            Id = p.Id,
             Username = p.User.Username,
             Titulo = p.Titulo,
             Conteudo = p.Conteudo,
@@ -115,26 +116,28 @@ public class CommunityService : ICommunityService
         await context.SaveChangesAsync();
         return post;
     }
-    public async Task<Like?> LikePostAsync(Guid postId, Guid userId)
+    public async Task<bool> LikePostAsync(Guid postId, Guid userId)
     {
-        var user = await context.Users.FindAsync(userId);
-        if (user == null)
-            return null;
-
-        var alreadyLiked = await context.Likes.AnyAsync(l => l.PostId == postId && l.UserId == userId);
-        if (alreadyLiked)
-            throw new UnauthorizedAccessException("Você já curtiu esse post.");
-
-        var like = new Like
+        var existingLike = await context.Likes
+            .FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == userId);
+        bool isNowLiked;
+        if (existingLike != null)
         {
-            PostId = postId,
-            UserId = userId
-        };
-
-        context.Likes.Add(like);
+            context.Likes.Remove(existingLike);
+            isNowLiked = false; 
+        }
+        else
+        {
+            var newLike = new Like
+            {
+                PostId = postId,
+                UserId = userId
+            };
+            context.Likes.Add(newLike);
+            isNowLiked = true;
+        }
         await context.SaveChangesAsync();
-
-        return like;
+        return isNowLiked;
     }
 
 }

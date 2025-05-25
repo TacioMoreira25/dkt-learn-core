@@ -10,6 +10,6 @@ public interface ICommunityService
     Task<Post?> UpdatePostAsync(Guid postId, Guid userId, string titulo, string conteudo);
      Task<ReplyDto?> CreateReplyAsync(Guid postId, CreateReplyDto request, Guid userId, string username);
      Task<Post?> DeletePostAsync(Guid id, Guid userId);
-     Task<Like?> LikePostAsync(Guid postId, Guid userId);
+     Task<bool> LikePostAsync(Guid postId, Guid userId);
 
 }
