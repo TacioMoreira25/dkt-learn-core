@@ -1,4 +1,5 @@
 using System.Text;
+using dkt_learn_core.Mappings;
 using dkt_learn_core.Services;
 using dkt_learn_core.Settings;
 using DKT_Learn.Data;
@@ -20,6 +21,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var host = Environment.GetEnvironmentVariable("DB_HOST");
 var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
@@ -27,7 +29,7 @@ var db   = Environment.GetEnvironmentVariable("DB_NAME");
 var user = Environment.GetEnvironmentVariable("DB_USER");
 var pass = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
-var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={pass}";
+var connectionString = "Host=localhost;Port=5432;Database=Dkt-learn-core;Username=postgres;Password=1234";
 
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: true)

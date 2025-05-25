@@ -1,0 +1,6 @@
+namespace dkt_learn_core.shared.Models.Dtos;
+
+public class ContentResponseDto
+{
+    
+}

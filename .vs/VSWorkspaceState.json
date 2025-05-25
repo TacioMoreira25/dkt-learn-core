@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\dkt-learn-core",
+    "\\dkt-learn-core.shared.Datas",
+    "\\dkt-learn-core.shared.Datas\\Data",
+    "\\dkt-learn-core.shared.Models",
+    "\\dkt-learn-core.shared.Models\\Dtos",
+    "\\dkt-learn-core.shared.Models\\Models",
+    "\\dkt-learn-core\\Controllers"
+  ],
+  "SelectedNode": "\\dkt-learn-core\\Controllers\\UserController.cs",
+  "PreviewInSolutionExplorer": false
+}
