@@ -13,8 +13,8 @@ namespace DKT_Learn.Data
             var user = Environment.GetEnvironmentVariable("DB_USER");
             var pass = Environment.GetEnvironmentVariable("DB_PASSWORD");
             
-            var connectionString = "Host=localhost;Port=5432;Database=Dkt-learn-core;Username=postgres;Password=1234";
-
+            var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={pass}";
+            
             var builder = new DbContextOptionsBuilder<AppDbContext>();
 
             builder.UseNpgsql(connectionString);

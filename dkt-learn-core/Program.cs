@@ -29,11 +29,7 @@ var db   = Environment.GetEnvironmentVariable("DB_NAME");
 var user = Environment.GetEnvironmentVariable("DB_USER");
 var pass = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
-var connectionString = "Host=localhost;Port=5432;Database=Dkt-learn-core;Username=postgres;Password=1234";
-
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: true)
-    .AddEnvironmentVariables(); 
+var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={pass}";
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseNpgsql(connectionString));
@@ -75,3 +71,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

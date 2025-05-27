@@ -1,8 +1,9 @@
-using dkt_learn_core.Services;
 using dkt_learn_core.Settings;
-using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
-using MimeKit;
+using System.Net;
+using System.Net.Mail;
+
+namespace dkt_learn_core.Services;
 
 public class EmailService : IEmailService
 {
@@ -17,16 +18,23 @@ public class EmailService : IEmailService
     {
         if (string.IsNullOrWhiteSpace(toEmail))
             throw new ArgumentException("Endereço de e-mail inválido.", nameof(toEmail));
-        var message = new MimeMessage();
-        message.From.Add(MailboxAddress.Parse(emailSettings.From));
-        message.To.Add(MailboxAddress.Parse(toEmail));
-        message.Subject = "Código de redefinição de senha";
-        message.Body = new TextPart("plain") { Text = $"Seu código: {code}" };
 
-        using var smtp = new SmtpClient();
-        await smtp.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-        await smtp.AuthenticateAsync(emailSettings.From, emailSettings.AppPassword);
-        await smtp.SendAsync(message);
-        await smtp.DisconnectAsync(true);
+        using var smtp = new SmtpClient("smtp.gmail.com", 587)
+        {
+            Credentials = new NetworkCredential(emailSettings.From, emailSettings.Password),
+            EnableSsl = true
+        };
+
+        var message = new MailMessage
+        {
+            From = new MailAddress(emailSettings.From, "DKT Learn"),
+            Subject = "Código de redefinição de senha",
+            Body = $"<p>Seu código de redefinição é: <strong>{code}</strong></p>",
+            IsBodyHtml = true
+        };
+
+        message.To.Add(toEmail);
+
+        await smtp.SendMailAsync(message);
     }
 }
